@@ -1,0 +1,252 @@
+<!doctype html>
+<html>
+<head>
+    <title>Save history Telegram</title>
+    <style>
+        body {
+            font-family: "Arial Black", "Lucida Grande", Tahoma, sans-serif;
+            font-size: 100%;
+        }
+
+        #myTextarea {
+            overflow-y: scroll;
+            min-width: 750px;
+            max-width: 750px;
+            min-height: 300px;
+            max-height: 300px;
+        }
+
+        #txtAreaStatus {
+            overflow-y: scroll;
+            min-width: 750px;
+            max-width: 750px;
+            min-height: 64px;
+            max-height: 64px;
+            background-color: rgba(68, 149, 213, 0.42);
+        }
+
+        .btnLoadGrid {
+            min-width: 52px;
+            max-width: 52px;
+            min-height: 25px;
+            max-height: 25px;
+        }
+
+        .row_cell_heigth {
+            min-height: 25px;
+            max-height: 25px;
+        }
+
+        td {
+            border: 0px solid #428bca;
+            padding: 0;
+            margin: 0;
+        }
+
+        .tableGrid {
+            border-collapse: collapse;
+            border-spacing: 0;
+        }
+
+        .btnPhoto .btnSaveAs .btnIcon {
+            min-width: 54px;
+            max-width: 54px;
+            min-height: 52px;
+            max-height: 52px;
+        }
+
+        .row_cell {
+            float: left;
+            margin: 0;
+        }
+
+        .row_cell_right {
+            float: left;
+            margin-left: 5px;
+        }
+
+        .separator {
+            margin-top: 0.3cm
+        }
+
+        .btnWithIcon:disabled {
+            opacity: 0.3;
+        }
+
+        div.text {
+            border: 1px solid #353535;
+        }
+
+        .cursorPhoto {
+            height: 20px;
+            width: 20px;
+            background: url('../img/cursor.png') no-repeat center;
+        }
+
+        .allocateSpace {
+            height: 20px;
+            width: 60px;
+        }
+    </style>
+    <script src="../core/lib/ace-2018.02.11.min.js"></script>
+    <script src="../core/lib/jquery-1.12.0.min.js"></script>
+    <script src="../core/lib/angular-1.5.8.min.js"></script>
+    <script src="../core/generic_tools.js"></script>
+    <script src="../core/page_control.js"></script>
+    <script src="../core/popup.js"></script>
+</head>
+<body>
+<div id='myTextarea'></div>
+<div class='container separator'>
+    <table class='tableGrid row_cell row_cell_heigth '>
+        <tr>
+            <td>
+                <div class='row_cell'>Messages</div>
+            </td>
+        </tr>
+    </table>
+
+    <table id='loadHistory' class='tableGrid row_cell_right'>
+        <tr>
+            <td>
+                <div class='row_cell'>
+                    <button class="btnLoadGrid" id="btnFetchHistory25" type="button" disabled>25</button>
+                </div>
+            </td>
+            <td>
+                <div class='row_cell'>
+                    <button class="btnLoadGrid" id="btnFetchHistory50" type="button" disabled>50</button>
+                </div>
+            </td>
+            <td>
+                <div class='row_cell'>
+                    <button class="btnLoadGrid" id="btnFetchHistory100" type="button" disabled>100</button>
+                </div>
+            </td>
+            <td>
+                <div class='row_cell'>
+                    <button class="btnLoadGrid" id="btnFetchHistory250" type="button" disabled>250</button>
+                </div>
+            </td>
+            <td>
+                <div class='row_cell'>
+                    <button class="btnLoadGrid" id="btnFetchHistory500" type="button" disabled>500</button>
+                </div>
+            </td>
+            <td>
+                <div class='row_cell'>
+                    <button class="btnLoadGrid" id="btnFetchHistory1000" type="button" disabled>1 k</button>
+                </div>
+            </td>
+            <td>
+                <div class='row_cell'>
+                    <button class="btnLoadGrid" id="btnFetchHistory2000" type="button" disabled>2 k</button>
+                </div>
+            </td>
+            <td>
+                <div class='row_cell'>
+                    <button class="btnLoadGrid" id="btnFetchHistory5000" type="button" disabled>5 k</button>
+                </div>
+            </td>
+            <td>
+                <div class='row_cell'>
+                    <button class="btnLoadGrid" id="btnFetchHistory10000" type="button" disabled>10 k</button>
+                </div>
+            </td>
+            <td>
+                <div class='row_cell'>
+                    <button class="btnLoadGrid" id="btnFetchHistory20000" type="button" disabled>20 k</button>
+                </div>
+            </td>
+            <td>
+                <div class='row_cell'>
+                    <button class="btnLoadGrid" id="btnFetchHistory50000" type="button" disabled>50 k</button>
+                </div>
+            </td>
+            <td>
+                <div class='row_cell'>
+                    <button class="btnLoadGrid" id="btnFetchHistoryAll" type="button" disabled>all</button>
+                </div>
+            </td>
+        </tr>
+    </table>
+</div>
+
+<table>
+    <tr>
+        <td>
+            <div>
+                <div class='row_cell'><textarea id="txtAreaStatus" readonly></textarea></div>
+                <table class='tableGrid row_cell row_cell_heigth '>
+                    <tr>
+                        <td>
+                            <div id='progressBar' class='row_cell btnLoadGrid' readonly></div>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <div>
+                <table>
+                    <tr>
+                        <td>
+                            <div class='row_cell'>
+                                <button class="btnPhoto btnWithIcon" id="btnOpenPhotos" type="button"
+                                        title="Open photos (a photo will be shown if any found)" disabled><img
+                                        src="../img/image.png"/></button>
+                            </div>
+                        </td>
+                        <td>
+                            <div class='text cursorPhoto'
+                                 title="Use arrows to open a photo (if found in the current history) that was sent..."></div>
+                        </td>
+                        <td>
+                            <div class='row_cell'>
+                                <button class="btnPhoto btnWithIcon" id="btnOpenPrevPhoto" type="button"
+                                        title="...right before the date that cursor position is referring to." disabled>
+                                    <img src="../img/arrow-left.png"/></button>
+                            </div>
+                        </td>
+                        <td>
+                            <div class='row_cell'>
+                                <button class="btnPhoto btnWithIcon" id="btnOpenNextPhoto" type="button"
+                                        title="...right after the date that cursor position is referring to." disabled>
+                                    <img src="../img/arrow-right.png"/></button>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="allocateSpace"></div>
+                        </td>
+                        <td>
+                            <div class="row_cell">
+                                <button class="btnSaveAs btnWithIcon" id="btnSaveAs" type="button" title="Save As Text"
+                                        disabled><b>SAVE</b>
+                                </button>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="allocateSpace"></div>
+                        </td>
+                        <td>
+                            <div id="pageControl">Page Control</div>
+                        </td>
+                        <td>
+                            <div class="allocateSpace"></div>
+                        </td>
+                        <td>
+                            <div class='row_cell'>
+                                <button class="btnWithIcon" id="btnClose" type="button" title="Close this popup"
+                                        disabled><img src="../img/close.png"/></button>
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </td>
+    </tr>
+</table>
+</body>
+</html>

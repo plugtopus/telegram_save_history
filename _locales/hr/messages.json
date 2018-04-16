@@ -1,0 +1,14 @@
+﻿{
+   "desc": {
+      "message": "This extension allows you to save your Telegram chat history to plaintext."
+   },
+   "name": {
+      "message": "Save history Telegram"
+   },
+   "shortname": {
+      "message": "Save Chat"
+   },
+   "title": {
+      "message": "Save history Telegram"
+   }
+}
